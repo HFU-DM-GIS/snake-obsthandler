@@ -12,8 +12,8 @@ let score = 0;
 
 const updateFoodPosition = () => {
     // Passing a random 1 - 30 value as food position
-    foodX = Math.floor(Math.random() * 10) + 1;
-    foodY = Math.floor(Math.random() * 10) + 1;
+    foodX = Math.floor(Math.random() * 30) + 1;
+    foodY = Math.floor(Math.random() * 30) + 1;
 }
 
 const handleGameOver = () => {
@@ -28,13 +28,13 @@ const changeDirection = e => {
     if(e.key === "ArrowUp" && velocityY != 1) {
         velocityX = 0;
         velocityY = -1;
-    } else if(e.key === "ArrowDown" && velocityY != -1) {
+    } else if(e.key === "ArrowDown" && velocityY !== -1) {
         velocityX = 0;
-        velocityY = -1;
-    } else if(e.key === "ArrowLeft" && velocityX != 1) {
+        velocityY = 1;
+    } else if(e.key === "ArrowLeft" && velocityX !== 1) {
         velocityX = -1;
         velocityY = 0;
-    } else if(e.key === "ArrowRight" && velocityX != -1) {
+    } else if(e.key === "ArrowRight" && velocityX !== -1) {
         velocityX = 1;
         velocityY = 0;
     }
@@ -51,7 +51,7 @@ const initGame = () => {
     if(snakeX === foodX && snakeY === foodY) {
         updateFoodPosition();
         snakeBody.push([foodY, foodX]); // Pushing food position to snake body array
-        scoreElement.innerText = `Score: ${score}`;
+        scoreElement.innerText = `Score: ${score+=1}`;
     }
     // Updating the snake's head position based on the current velocity
     snakeX += velocityX;
@@ -64,7 +64,7 @@ const initGame = () => {
     snakeBody[0] = [snakeX, snakeY]; // Setting first element of snake body to current snake position
 
     // Checking if the snake's head is out of wall, if so setting gameOver to true
-    if(snakeX <= 0 || snakeX > 30 || snakeY <= 3 || snakeY > 30) {
+    if(snakeX <= 0 || snakeX > 30 || snakeY <= 0 || snakeY > 30) {
         return gameOver = true;
     }
 
@@ -76,6 +76,16 @@ const initGame = () => {
             gameOver = true;
         }
     }
+
+    for (let i = 0; i < snakeBody.length - snakeBody.length + 1; i++) {
+        // Adding a div for each part of the snake's body
+        html += `<div class="tail" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
+        // Checking if the snake head hit the body, if so set gameOver to true
+        if (i !== 0 && snakeBody[0][1] === snakeBody[i][1] && snakeBody[0][0] === snakeBody[i][0]) {
+            gameOver = true;
+        }
+    }
+
     playBoard.innerHTML = html;
 }
 

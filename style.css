@@ -44,6 +44,10 @@ body {
   background: #60CBFF;
 }
 
+.play-board .tail {
+  background: orange;
+}
+
 .controls {
   display: none;
   justify-content: space-between;
