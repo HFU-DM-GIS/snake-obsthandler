@@ -11,15 +11,6 @@ let setIntervalId;
 let score = 0;
 let timer = 0;
 
-const startTimer = () => {
-    const timerInterval = setInterval(() => {
-        timer--;
-        if (timer <= 0) {
-            clearInterval(timerInterval);
-            handleGameOver();
-        }
-    }, 1000);
-};
 
 const updateFoodPosition = () => {
     // Passing a random 1 - 30 value as food position
@@ -51,6 +42,16 @@ const changeDirection = e => {
     }
 }
 
+const startTimer = () => {
+    const timerInterval = setInterval(() => {
+        timer--;
+        if (timer <= 0) {
+            clearInterval(timerInterval);
+            handleGameOver();
+        }
+    }, 20000);
+};
+
 // Calling changeDirection on each key click and passing key dataset value as an object
 controls.forEach(button => button.addEventListener("click", () => changeDirection({ key: button.dataset.key })));
 
@@ -63,11 +64,11 @@ const initGame = () => {
         updateFoodPosition();
         snakeBody.push([foodY, foodX]); // Pushing food position to snake body array
         scoreElement.innerText = `Score: ${score+=1}`;
-        timer = 20;
+        timer = 50;
 
-} else {
-    startTimer(); // Start the timer when no fruit is collected
-}
+ } else {
+     startTimer(); // Start the timer when no fruit is collected
+ }
 
     // Updating the snake's head position based on the current velocity
     snakeX += velocityX;
