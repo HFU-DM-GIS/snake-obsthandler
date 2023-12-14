@@ -68,6 +68,10 @@ body {
   margin-top: 10px;
 }
 
+.orange-head {
+  background-color: orange;
+}
+
 @media screen and (max-width: 800px) {
   .wrapper {
     width: 90vmin;

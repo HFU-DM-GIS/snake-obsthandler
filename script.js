@@ -9,8 +9,9 @@ let velocityX = 0, velocityY = 0;
 let snakeBody = [];
 let setIntervalId;
 let score = 0;
+let lastMoveTime = Date.now();
 let timer = 20;
-let timerInterval;
+let snakeInterval;
 
 
 const updateFoodPosition = () => {
@@ -45,15 +46,22 @@ const changeDirection = e => {
 
 const startTimer = () => {
     const timerSpan = document.getElementById("timerSpan");
-    timerInterval = setInterval(() => {
+
+    const updateTimer = () => {
         timer--;
         timerSpan.innerText = timer;
 
         if (timer <= 0) {
-            clearInterval(timerInterval);
+            clearInterval(snakeInterval);
             handleGameOver();
         }
-    }, 1000);
+    };
+
+    // Initial call und interval for timer
+    updateTimer();
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    return timerInterval;
 };
 
 const stopTimer = () => {
@@ -64,6 +72,12 @@ const stopTimer = () => {
 controls.forEach(button => button.addEventListener("click", () => changeDirection({ key: button.dataset.key })));
 
 const initGame = () => {
+    const currentTime = Date.now();
+    const timeElapsed = currentTime - lastMoveTime;
+
+    if (timeElapsed >= 100) {
+        lastMoveTime = currentTime;
+
     if(gameOver) return handleGameOver();
     let html = `<div class="food" style="grid-area: ${foodY} / ${foodX}"></div>`;
 
@@ -74,16 +88,12 @@ const initGame = () => {
         scoreElement.innerText = `Score: ${score+=1}`;
        
         // Reset the timer when a fruit is collected
-        stopTimer();
+        clearInterval(snakeInterval);
         timer = 20;
         document.getElementById("timerSpan").innerText = timer;
+        snakeInterval = startTimer();
 
-        // Restart timer again
-        startTimer();
-
- } else {
-     startTimer(); // Start the timer when no fruit is collected
- }
+    };
 
     // Updating the snake's head position based on the current velocity
     snakeX += velocityX;
@@ -96,13 +106,19 @@ const initGame = () => {
     snakeBody[0] = [snakeX, snakeY]; // Setting first element of snake body to current snake position
 
     // Checking if the snake's head is out of wall, if so setting gameOver to true
-    if(snakeX <= 0 || snakeX > 30 || snakeY <= 0 || snakeY > 30) {
+    if (snakeX <= 0 || snakeX > 30 || snakeY <= 0 || snakeY > 30) {
         return gameOver = true;
     }
 
     for (let i = 0; i < snakeBody.length; i++) {
         // Adding a div for each part of the snake's body
-        html += `<div class="head" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
+        if (i === 0) {
+            // Add the orange-head class to the head of the snake
+            html += `<div class="head orange-head" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
+        } else {
+            html += `<div class="head" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
+        }
+
         // Checking if the snake head hit the body, if so set gameOver to true
         if (i !== 0 && snakeBody[0][1] === snakeBody[i][1] && snakeBody[0][0] === snakeBody[i][0]) {
             gameOver = true;
@@ -120,9 +136,11 @@ const initGame = () => {
 
     playBoard.innerHTML = html;
 }
+};
 
 
 
 updateFoodPosition();
-setIntervalId = setInterval(initGame, 100);
+snakeInterval = setInterval(initGame, 100);
+snakeInterval = startTimer();
 document.addEventListener("keyup", changeDirection);
