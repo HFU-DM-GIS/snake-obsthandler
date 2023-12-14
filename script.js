@@ -9,6 +9,17 @@ let velocityX = 0, velocityY = 0;
 let snakeBody = [];
 let setIntervalId;
 let score = 0;
+let timer = 0;
+
+const startTimer = () => {
+    const timerInterval = setInterval(() => {
+        timer--;
+        if (timer <= 0) {
+            clearInterval(timerInterval);
+            handleGameOver();
+        }
+    }, 1000);
+};
 
 const updateFoodPosition = () => {
     // Passing a random 1 - 30 value as food position
@@ -52,7 +63,12 @@ const initGame = () => {
         updateFoodPosition();
         snakeBody.push([foodY, foodX]); // Pushing food position to snake body array
         scoreElement.innerText = `Score: ${score+=1}`;
-    }
+        timer = 20;
+
+} else {
+    startTimer(); // Start the timer when no fruit is collected
+}
+
     // Updating the snake's head position based on the current velocity
     snakeX += velocityX;
     snakeY += velocityY;
@@ -88,6 +104,8 @@ const initGame = () => {
 
     playBoard.innerHTML = html;
 }
+
+
 
 updateFoodPosition();
 setIntervalId = setInterval(initGame, 100);
