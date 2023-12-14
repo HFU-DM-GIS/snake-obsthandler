@@ -62,6 +62,12 @@ body {
   border-right: 1px solid #171B26;
 }
 
+.timer {
+  color: grey;
+  font-size: 24px;
+  margin-top: 10px;
+}
+
 @media screen and (max-width: 800px) {
   .wrapper {
     width: 90vmin;

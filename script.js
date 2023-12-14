@@ -9,7 +9,8 @@ let velocityX = 0, velocityY = 0;
 let snakeBody = [];
 let setIntervalId;
 let score = 0;
-let timer = 0;
+let timer = 20;
+let timerInterval;
 
 
 const updateFoodPosition = () => {
@@ -43,13 +44,20 @@ const changeDirection = e => {
 }
 
 const startTimer = () => {
-    const timerInterval = setInterval(() => {
+    const timerSpan = document.getElementById("timerSpan");
+    timerInterval = setInterval(() => {
         timer--;
+        timerSpan.innerText = timer;
+
         if (timer <= 0) {
             clearInterval(timerInterval);
             handleGameOver();
         }
-    }, 20000);
+    }, 1000);
+};
+
+const stopTimer = () => {
+    clearInterval(timerInterval);
 };
 
 // Calling changeDirection on each key click and passing key dataset value as an object
@@ -64,7 +72,14 @@ const initGame = () => {
         updateFoodPosition();
         snakeBody.push([foodY, foodX]); // Pushing food position to snake body array
         scoreElement.innerText = `Score: ${score+=1}`;
-        timer = 50;
+       
+        // Reset the timer when a fruit is collected
+        stopTimer();
+        timer = 20;
+        document.getElementById("timerSpan").innerText = timer;
+
+        // Restart timer again
+        startTimer();
 
  } else {
      startTimer(); // Start the timer when no fruit is collected
