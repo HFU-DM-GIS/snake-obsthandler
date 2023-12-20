@@ -12,7 +12,22 @@ let score = 0;
 let lastMoveTime = Date.now();
 let timer = 20;
 let snakeInterval;
+let foodEaten = 0; 
+let speed = 100;
 
+const increaseSpeed = () => {
+    speed -= 10;  //speed
+    clearInterval(snakeInterval);
+    snakeInterval = setInterval(initGame, speed);
+}
+
+const levelUp = () => {
+    clearInterval(snakeInterval);
+    alert(`Level Up`);
+    foodEaten = 0;
+    speed = Math.max(speed - 20, 50);  // speed for the next level
+    snakeInterval = setInterval(initGame, speed);
+}
 
 const updateFoodPosition = () => {
     // Passing a random 1 - 30 value as food position
@@ -82,18 +97,28 @@ const initGame = () => {
     let html = `<div class="food" style="grid-area: ${foodY} / ${foodX}"></div>`;
 
     // Checking if the snake hit the food
-    if(snakeX === foodX && snakeY === foodY) {
+    if (snakeX === foodX && snakeY === foodY) {
         updateFoodPosition();
-        snakeBody.push([foodY, foodX]); // Pushing food position to snake body array
-        scoreElement.innerText = `Score: ${score+=1}`;
-       
+        snakeBody.push([foodY, foodX]);
+        scoreElement.innerText = `Score: ${score += 1}`;
+        foodEaten += 1;
+
+        // Increase speed after eating N food
+        if (foodEaten % 5 === 0) {
+            increaseSpeed();
+        }
+
+        // Level up after eating M food
+        if (foodEaten % 10 === 0) {
+            levelUp();
+        }
+
         // Reset the timer when a fruit is collected
         clearInterval(snakeInterval);
         timer = 20;
         document.getElementById("timerSpan").innerText = timer;
-        snakeInterval = startTimer();
-
-    };
+        snakeInterval = setInterval(initGame, speed);
+    }
 
     // Updating the snake's head position based on the current velocity
     snakeX += velocityX;
@@ -137,8 +162,6 @@ const initGame = () => {
     playBoard.innerHTML = html;
 }
 };
-
-
 
 updateFoodPosition();
 snakeInterval = setInterval(initGame, 100);
