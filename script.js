@@ -14,6 +14,23 @@ let timer = 20;
 let snakeInterval;
 let foodEaten = 0; 
 let speed = 100;
+let rows = 30;
+let columns = 30; 
+
+const createPlayBoard = () => {
+    playBoard.innerHTML = "";
+    playBoard.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    playBoard.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+};
+
+const reducePlayBoardSize = () => {
+    if (rows > 1 && columns > 1) {
+        rows -= 1;
+        columns -= 1;
+        createPlayBoard();
+        updateFoodPosition();
+    }
+};  
 
 const increaseSpeed = () => {
     speed -= 10;  //speed
@@ -31,8 +48,8 @@ const levelUp = () => {
 
 const updateFoodPosition = () => {
     // Passing a random 1 - 30 value as food position
-    foodX = Math.floor(Math.random() * 30) + 1;
-    foodY = Math.floor(Math.random() * 30) + 1;
+    foodX = Math.floor(Math.random() * rows) + 1;
+    foodY = Math.floor(Math.random() * columns) + 1;
 }
 
 const handleGameOver = () => {
@@ -72,6 +89,7 @@ const startTimer = () => {
         }
     };
 
+
     // Initial call und interval for timer
     updateTimer();
     const timerInterval = setInterval(updateTimer, 1000);
@@ -90,6 +108,8 @@ const initGame = () => {
     const currentTime = Date.now();
     const timeElapsed = currentTime - lastMoveTime;
 
+
+
     if (timeElapsed >= 100) {
         lastMoveTime = currentTime;
 
@@ -98,6 +118,9 @@ const initGame = () => {
             gameOver = false;
             return;
         }
+    
+
+        
 
     if(gameOver) return handleGameOver();
     let html = `<div class="food" style="grid-area: ${foodY} / ${foodX}"></div>`;
@@ -119,6 +142,10 @@ const initGame = () => {
             levelUp();
         }
 
+        if (foodEaten % 5 === 0) {
+            reducePlayBoardSize();
+        }
+
         // Reset the timer when a fruit is collected
         clearInterval(snakeInterval);
         timer = 20;
@@ -138,7 +165,7 @@ const initGame = () => {
     snakeBody[0] = [snakeX, snakeY]; // Setting first element of snake body to current snake position
 
     // Checking if the snake's head is out of wall, if so setting gameOver to true
-    if (snakeX <= 0 || snakeX > 30 || snakeY <= 0 || snakeY > 30) {
+    if (snakeX <= 0 || snakeX > rows || snakeY <= 0 || snakeY > columns) {
         return gameOver = true;
     }
 
