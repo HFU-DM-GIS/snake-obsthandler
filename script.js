@@ -118,6 +118,7 @@ const initGame = () => {
         timer = 20;
         document.getElementById("timerSpan").innerText = timer;
         snakeInterval = setInterval(initGame, speed);
+        snakeInterval = startTimer();
     }
 
     // Updating the snake's head position based on the current velocity
