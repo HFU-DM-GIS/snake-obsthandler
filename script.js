@@ -93,6 +93,12 @@ const initGame = () => {
     if (timeElapsed >= 100) {
         lastMoveTime = currentTime;
 
+        if (gameOver) {
+            handleGameOver();
+            gameOver = false;
+            return;
+        }
+
     if(gameOver) return handleGameOver();
     let html = `<div class="food" style="grid-area: ${foodY} / ${foodX}"></div>`;
 
@@ -166,5 +172,5 @@ const initGame = () => {
 
 updateFoodPosition();
 snakeInterval = setInterval(initGame, 100);
-snakeInterval = startTimer();
+//snakeInterval = startTimer();
 document.addEventListener("keyup", changeDirection);
