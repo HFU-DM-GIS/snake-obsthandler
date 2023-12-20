@@ -17,6 +17,11 @@ let speed = 100;
 let rows = 30;
 let columns = 30; 
 
+const RandomFact = 'https://uselessfacts.jsph.pl/api/v2/facts/random?language=de';
+
+
+
+
 const createPlayBoard = () => {
     playBoard.innerHTML = "";
     playBoard.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
@@ -40,7 +45,7 @@ const increaseSpeed = () => {
 
 const levelUp = () => {
     clearInterval(snakeInterval);
-    alert(`Level Up`);
+   //    alert(`Level Up`);
     foodEaten = 0;
     speed = Math.max(speed - 20, 50);  // speed for the next level
     snakeInterval = setInterval(initGame, speed);
@@ -52,10 +57,34 @@ const updateFoodPosition = () => {
     foodY = Math.floor(Math.random() * columns) + 1;
 }
 
-const handleGameOver = () => {
+// function ApiRequest() {
+//     fetch('https://uselessfacts.jsph.pl/api/v2/facts/random?language=de')
+//    .then(response => response.json())
+//    .then(json => console.log(JSON.stringify(json)))
+//    return JSON.stringify(json);
+// }
+
+async function userAction () {
+    const response = await fetch(RandomFact, {
+        method:'GET', 
+        headers: {
+            "Content-Type":"application/json"
+        }
+    });
+    const myJson = await response.json(); //extract JSON from the http response
+    // do something with myJson
+    const parsejson = JSON.stringify(myJson, ["text"]);
+    console.log(parsejson);
+    alert("Schade ... Game Over, aber wusstest du schon: " + myJson["text"]);
+   // return parsejson["text"];
+  }
+
+async function handleGameOver () {
     // Clearing the timer and reloading the page on game over
     clearInterval(setIntervalId);
-    alert("Game Over! Press OK to replay...");
+   // Game Over
+   // alert(userAction());
+    await userAction();
     location.reload();
 }
 
@@ -108,8 +137,6 @@ const initGame = () => {
     const currentTime = Date.now();
     const timeElapsed = currentTime - lastMoveTime;
 
-
-
     if (timeElapsed >= 100) {
         lastMoveTime = currentTime;
 
@@ -137,7 +164,7 @@ const initGame = () => {
             increaseSpeed();
         }
 
-        // Level up after eating M food
+        // Level up after eating 10 food
         if (foodEaten % 10 === 0) {
             levelUp();
         }
