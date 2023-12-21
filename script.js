@@ -17,17 +17,19 @@ let speed = 100;
 let rows = 30;
 let columns = 30; 
 
+// API Link
 const RandomFact = 'https://uselessfacts.jsph.pl/api/v2/facts/random?language=de';
 
 
 
-
+// Create a playboard
 const createPlayBoard = () => {
     playBoard.innerHTML = "";
     playBoard.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
     playBoard.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
 };
 
+// Reduce playboardsize by 1 Column and Row
 const reducePlayBoardSize = () => {
     if (rows > 1 && columns > 1) {
         rows -= 1;
@@ -37,12 +39,14 @@ const reducePlayBoardSize = () => {
     }
 };  
 
+// Increase speed by 10 
 const increaseSpeed = () => {
-    speed -= 10;  //speed
+    speed += 10;  //speed
     clearInterval(snakeInterval);
     snakeInterval = setInterval(initGame, speed);
 }
 
+// Decrease speed by 20 and add 50 speed
 const levelUp = () => {
     clearInterval(snakeInterval);
    //    alert(`Level Up`);
@@ -51,19 +55,14 @@ const levelUp = () => {
     snakeInterval = setInterval(initGame, speed);
 }
 
+// update the foodposition
 const updateFoodPosition = () => {
     // Passing a random 1 - 30 value as food position
     foodX = Math.floor(Math.random() * rows) + 1;
     foodY = Math.floor(Math.random() * columns) + 1;
 }
 
-// function ApiRequest() {
-//     fetch('https://uselessfacts.jsph.pl/api/v2/facts/random?language=de')
-//    .then(response => response.json())
-//    .then(json => console.log(JSON.stringify(json)))
-//    return JSON.stringify(json);
-// }
-
+// Call API
 async function userAction () {
     const response = await fetch(RandomFact, {
         method:'GET', 
@@ -72,13 +71,13 @@ async function userAction () {
         }
     });
     const myJson = await response.json(); //extract JSON from the http response
-    // do something with myJson
-    const parsejson = JSON.stringify(myJson, ["text"]);
+
+    const parsejson = JSON.stringify(myJson, ["text"]); // parse Json into string
     console.log(parsejson);
     alert("Schade ... Game Over, aber wusstest du schon: " + myJson["text"]);
-   // return parsejson["text"];
   }
 
+  // Game Over Message
 async function handleGameOver () {
     // Clearing the timer and reloading the page on game over
     clearInterval(setIntervalId);
@@ -88,6 +87,7 @@ async function handleGameOver () {
     location.reload();
 }
 
+// Change Direction of the Snake
 const changeDirection = e => {
     // Changing velocity value based on key press
     if(e.key === "ArrowUp" && velocityY != 1) {
@@ -105,6 +105,7 @@ const changeDirection = e => {
     }
 }
 
+// Timer to eat food
 const startTimer = () => {
     const timerSpan = document.getElementById("timerSpan");
 
@@ -133,6 +134,7 @@ const stopTimer = () => {
 // Calling changeDirection on each key click and passing key dataset value as an object
 controls.forEach(button => button.addEventListener("click", () => changeDirection({ key: button.dataset.key })));
 
+// Initialise Game
 const initGame = () => {
     const currentTime = Date.now();
     const timeElapsed = currentTime - lastMoveTime;
@@ -159,7 +161,7 @@ const initGame = () => {
         scoreElement.innerText = `Score: ${score += 1}`;
         foodEaten += 1;
 
-        // Increase speed after eating N food
+        // Increase speed after eating 5 food
         if (foodEaten % 5 === 0) {
             increaseSpeed();
         }
@@ -169,6 +171,7 @@ const initGame = () => {
             levelUp();
         }
 
+        // Reduce Playboardsize after eating 5 food
         if (foodEaten % 5 === 0) {
             reducePlayBoardSize();
         }
