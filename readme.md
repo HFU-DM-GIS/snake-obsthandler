@@ -23,4 +23,5 @@ This is an implementation of the classic game "Snake". The original source is fr
 - Rename some variables (e.g. speed) to make the code better readable.
 - Restructure the initGame function so that it only initializes the game and call another function like "updateGame" in an interval.
 - Some quotes are not displayed completely.
+- Implement an option to enter a player's name and add a leaderboard
 
