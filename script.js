@@ -39,6 +39,7 @@ const reducePlayBoardSize = () => {
     }
 };
 
+// speed ist Geschwindigkeit, aber in SetInterval wird die Zeit gesetzt nach der die Funktion erneut aufgerufen wird. delay wäre geeigneter
 // Increase speed by 10 
 const increaseSpeed = () => {
     speed += 10;  //speed
@@ -47,6 +48,7 @@ const increaseSpeed = () => {
 }
 
 // Decrease speed by 20 and add 50 speed
+// diese Methode verkleinert speed, was das Spiel schneller macht, aber ist begrenzt auf 50 ms. Schneller wird es dann nicht mehr.
 const levelUp = () => {
     clearInterval(snakeInterval);
     //    alert(`Level Up`);
@@ -135,11 +137,12 @@ const stopTimer = () => {
 controls.forEach(button => button.addEventListener("click", () => changeDirection({ key: button.dataset.key })));
 
 // Initialise Game
+// diese Funktion macht weit mehr als nur das Spiel zu initialisieren. Unterteilt es in mehrere Funktionen.
 const initGame = () => {
     const currentTime = Date.now();
     const timeElapsed = currentTime - lastMoveTime;
 
-    if (timeElapsed >= 100) {
+    if (timeElapsed >= 100) { // initGame wird doch alle 100 ms aufgerufen, warum diese Abfrage?
         lastMoveTime = currentTime;
 
         if (gameOver) {
@@ -147,7 +150,7 @@ const initGame = () => {
             gameOver = false;
             return;
         }
-        
+        // dieses if wird nie erreicht, weil es ja schon vorher abgefragt wird
         if (gameOver) return handleGameOver();
         let html = `<div class="food" style="grid-area: ${foodY} / ${foodX}"></div>`;
 
@@ -227,4 +230,5 @@ const initGame = () => {
 updateFoodPosition();
 snakeInterval = setInterval(initGame, 100);
 //snakeInterval = startTimer();
-document.addEventListener("keyup", changeDirection);
+// warum wird changeDirection erneut aufgerufen, wenn man die Taste loslässt?
+document.addEventListener("keyup", changeDirection); 
