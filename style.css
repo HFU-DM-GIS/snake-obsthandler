@@ -72,6 +72,27 @@ body {
   background-color: orange;
 }
 
+.highscores {
+  flex: 1;
+  margin-left: 100px;
+  padding: 20px;
+  color: #B8C6DC;
+}
+
+.highscores table {
+  float: center;
+  width: 80%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.highscores th, .highscores td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #B8C6DC;
+}
+
+
 @media screen and (max-width: 800px) {
   .wrapper {
     width: 90vmin;

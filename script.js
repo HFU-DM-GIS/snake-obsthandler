@@ -41,7 +41,7 @@ const reducePlayBoardSize = () => {
 
 // Increase speed by 10 
 const increaseSpeed = () => {
-    speed += 10;  //speed
+    speed -= 10;  //speed
     clearInterval(snakeInterval);
     snakeInterval = setInterval(initGame, speed);
 }
@@ -85,6 +85,7 @@ async function handleGameOver() {
     // alert(userAction());
     await userAction();
     location.reload();
+    displayHighscores();
 }
 
 // Change Direction of the Snake
@@ -131,6 +132,27 @@ const stopTimer = () => {
     clearInterval(timerInterval);
 };
 
+// Load Highscore from localStorage
+let highscores = JSON.parse(localStorage.getItem('highscores')) || [];
+
+// Save Highscore in localStorage
+const saveHighscore = (username, score) => {
+    highscores.push({ username, score });
+    highscores = highscores.sort((a, b) => b.score - a.score).slice(0, 10); // Sortieren und auf 10 Einträge begrenzen
+    localStorage.setItem('highscores', JSON.stringify(highscores));
+};
+
+const displayHighscores = () => {
+    const highscoresBody = document.getElementById("highscoresBody");
+
+    // Fill the Highscore table
+    highscores.forEach((entry, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${index + 1}</td><td>${entry.username}</td><td>${entry.score}</td>`;
+        highscoresBody.appendChild(row);
+    });
+};
+
 // Calling changeDirection on each key click and passing key dataset value as an object
 controls.forEach(button => button.addEventListener("click", () => changeDirection({ key: button.dataset.key })));
 
@@ -145,7 +167,12 @@ const initGame = () => {
         if (gameOver) {
             handleGameOver();
             gameOver = false;
-            return;
+            const username = prompt("Game over! Enter your username:");
+        if (username) {
+            saveHighscore(username, score);
+            displayHighscores();
+        }
+            return
         }
         
         if (gameOver) return handleGameOver();

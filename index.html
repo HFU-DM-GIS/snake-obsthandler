@@ -24,5 +24,26 @@
       <div class="timer">Time left: <span id="timerSpan">20</span> seconds</div>
     </div>
 
+<div class="highscores">
+  <h2>Highscores</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Username</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody id="highscoresBody"></tbody>
+  </table>
+</div>
+
+<script>
+  // Show Highscore after loading table elements
+  document.addEventListener("DOMContentLoaded", () => {
+    displayHighscores();
+  });
+</script>
+
   </body>
 </html>
