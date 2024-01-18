@@ -13,7 +13,7 @@ let lastMoveTime = Date.now();
 let timer = 20;
 let snakeInterval;
 let foodEaten = 0;
-let speed = 100;
+let delay = 100;
 let rows = 30;
 let columns = 30;
 
@@ -22,13 +22,12 @@ const RandomFact = 'https://uselessfacts.jsph.pl/api/v2/facts/random?language=de
 
 
 
-
- // Create a playboard
- const createPlayBoard = () => {
-     playBoard.innerHTML = "";
-     playBoard.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-     playBoard.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
- };
+// Create a playboard
+const createPlayBoard = () => {
+    playBoard.innerHTML = "";
+    playBoard.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    playBoard.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+};
 
 // Reduce playboardsize by 1 Column and Row
 const reducePlayBoardSize = () => {
@@ -41,10 +40,10 @@ const reducePlayBoardSize = () => {
 };
 
 // Increase speed by 10 
-const increaseSpeed = () => {
-    speed -= 10;  //speed
+const increaseDelay = () => {
+    delay -= 10;
     clearInterval(snakeInterval);
-    snakeInterval = setInterval(initGame, speed);
+    snakeInterval = setInterval(initGame, delay);
 }
 
 // Decrease speed by 20 and add 50 speed
@@ -52,8 +51,8 @@ const levelUp = () => {
     clearInterval(snakeInterval);
     //    alert(`Level Up`);
     foodEaten = 0;
-    speed = Math.max(speed - 20, 50);  // speed for the next level
-    snakeInterval = setInterval(initGame, speed);
+    delay = Math.max(delay - 20, 50);  // speed for the next level
+    snakeInterval = setInterval(initGame, delay);
 }
 
 // update the foodposition
@@ -157,103 +156,8 @@ const displayHighscores = () => {
 // Calling changeDirection on each key click and passing key dataset value as an object
 controls.forEach(button => button.addEventListener("click", () => changeDirection({ key: button.dataset.key })));
 
- // Initialise Game
-//  const initGame = () => {
-//      const currentTime = Date.now();
-//      const timeElapsed = currentTime - lastMoveTime;
-
-//      if (timeElapsed >= 100) {
-//          lastMoveTime = currentTime;
-
-//          if (gameOver) {
-//              handleGameOver();
-//              gameOver = false;
-//              const username = prompt("Game over! Enter your username:");
-//          if (username) {
-//              saveHighscore(username, score);
-//              displayHighscores();
-//          }
-//              return
-//          }
-        
-//          if (gameOver) return handleGameOver();
-//          let html = `<div class="food" style="grid-area: ${foodY} / ${foodX}"></div>`;
-
-//          // Checking if the snake hit the food
-//          if (snakeX === foodX && snakeY === foodY) {
-//              updateFoodPosition();
-//              snakeBody.push([foodY, foodX]);
-//              scoreElement.innerText = `Score: ${score += 1}`;
-//              foodEaten += 1;
-
-//              // Increase speed after eating 5 food
-//              if (foodEaten % 5 === 0) {
-//                  increaseSpeed();
-//              }
-
-//              // Level up after eating 10 food
-//               if (foodEaten % 10 === 0) {
-//                   levelUp();
-//               }
-
-//               // Reduce Playboardsize after eating 5 food
-//               if (foodEaten % 5 === 0) {
-//                   reducePlayBoardSize();
-//               }
-
-//               // Reset the timer when a fruit is collected
-//               clearInterval(snakeInterval);
-//               timer = 20;
-//               document.getElementById("timerSpan").innerText = timer;
-//               snakeInterval = setInterval(initGame, speed);
-//               snakeInterval = startTimer();
-//           }
-
-//           // Updating the snake's head position based on the current velocity
-//           snakeX += velocityX;
-//           snakeY += velocityY;
-
-//           // Shifting forward the values of the elements in the snake body by one
-//           for (let i = snakeBody.length - 1; i > 0; i--) {
-//               snakeBody[i] = snakeBody[i - 1];
-//           }
-//           snakeBody[0] = [snakeX, snakeY]; // Setting first element of snake body to current snake position
-
-//           // Checking if the snake's head is out of wall, if so setting gameOver to true
-//           if (snakeX <= 0 || snakeX > rows || snakeY <= 0 || snakeY > columns) {
-//               return gameOver = true;
-//           }
-
-//           for (let i = 0; i < snakeBody.length; i++) {
-//              // Adding a div for each part of the snake's body
-//              if (i === 0) {
-//                  // Add the orange-head class to the head of the snake
-//                  html += `<div class="head orange-head" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
-//              } else {
-//                  html += `<div class="head" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
-//              }
-
-//              // Checking if the snake head hit the body, if so set gameOver to true
-//              if (i !== 0 && snakeBody[0][1] === snakeBody[i][1] && snakeBody[0][0] === snakeBody[i][0]) {
-//                     gameOver = true;
-//             }
-//         }
-
-//          for (let i = 0; i < snakeBody.length - snakeBody.length + 1; i++) {
-//              // Adding a div for each part of the snake's body
-//              html += `<div class="tail" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
-//             // Checking if the snake head hit the body, if so set gameOver to true
-//             if (i !== 0 && snakeBody[0][1] === snakeBody[i][1] && snakeBody[0][0] === snakeBody[i][0]) {
-//                  gameOver = true;
-//             }
-//         }
-
-//         playBoard.innerHTML = html;
-//     }
-// };
-
-// First part for gamelogic
-const initGameLogic = () => {
+// Initialise Game
+const startGame = () => {
     const currentTime = Date.now();
     const timeElapsed = currentTime - lastMoveTime;
 
@@ -264,100 +168,89 @@ const initGameLogic = () => {
             handleGameOver();
             gameOver = false;
             const username = prompt("Game over! Enter your username:");
-            if (username) {
-                saveHighscore(username, score);
-                displayHighscores();
+        if (username) {
+            saveHighscore(username, score);
+            displayHighscores();
+        }
+            return
+        }
+        
+        let html = `<div class="food" style="grid-area: ${foodY} / ${foodX}"></div>`;
+
+        // Checking if the snake hit the food
+        if (snakeX === foodX && snakeY === foodY) {
+            updateFoodPosition();
+            snakeBody.push([foodY, foodX]);
+            scoreElement.innerText = `Score: ${score += 1}`;
+            foodEaten += 1;
+
+            // Increase speed after eating 5 food
+            if (foodEaten % 5 === 0) {
+                increaseDelay();
             }
-            return;
+
+            // Level up after eating 10 food
+            if (foodEaten % 10 === 0) {
+                levelUp();
+            }
+
+            // Reduce Playboardsize after eating 5 food
+            if (foodEaten % 5 === 0) {
+                reducePlayBoardSize();
+            }
+
+            // Reset the timer when a fruit is collected
+            clearInterval(snakeInterval);
+            timer = 20;
+            document.getElementById("timerSpan").innerText = timer;
+            snakeInterval = setInterval(startGame, delay);
+            snakeInterval = startTimer();
         }
 
-        initGameLogic();
-        drawGameBoard();
+        // Updating the snake's head position based on the current velocity
+        snakeX += velocityX;
+        snakeY += velocityY;
+
+        // Shifting forward the values of the elements in the snake body by one
+        for (let i = snakeBody.length - 1; i > 0; i--) {
+            snakeBody[i] = snakeBody[i - 1];
+        }
+        snakeBody[0] = [snakeX, snakeY]; // Setting first element of snake body to current snake position
+
+        // Checking if the snake's head is out of wall, if so setting gameOver to true
+        if (snakeX <= 0 || snakeX > rows || snakeY <= 0 || snakeY > columns) {
+            return gameOver = true;
+        }
+
+        for (let i = 0; i < snakeBody.length; i++) {
+            // Adding a div for each part of the snake's body
+            if (i === 0) {
+                // Add the orange-head class to the head of the snake
+                html += `<div class="head orange-head" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
+            } else {
+                html += `<div class="head" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
+            }
+
+            // Checking if the snake head hit the body, if so set gameOver to true
+            if (i !== 0 && snakeBody[0][1] === snakeBody[i][1] && snakeBody[0][0] === snakeBody[i][0]) {
+                gameOver = true;
+            }
+        }
+
+        for (let i = 0; i < snakeBody.length - snakeBody.length + 1; i++) {
+            // Adding a div for each part of the snake's body
+            html += `<div class="tail" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
+            // Checking if the snake head hit the body, if so set gameOver to true
+            if (i !== 0 && snakeBody[0][1] === snakeBody[i][1] && snakeBody[0][0] === snakeBody[i][0]) {
+                gameOver = true;
+            }
+        }
+
+        playBoard.innerHTML = html;
     }
 };
 
-// second part for drawing board and interaction with snake
-const drawGameBoard = () => {
-    if (gameOver) return handleGameOver();
-    let html = `<div class="food" style="grid-area: ${foodY} / ${foodX}"></div>`;
-
-              // Checking if the snake hit the food
-          if (snakeX === foodX && snakeY === foodY) {
-              updateFoodPosition();
-              snakeBody.push([foodY, foodX]);
-              scoreElement.innerText = `Score: ${score += 1}`;
-              foodEaten += 1;
-
-              // Increase speed after eating 5 food
-              if (foodEaten % 5 === 0) {
-                  increaseSpeed();
-              }
-
-              // Level up after eating 10 food
-               if (foodEaten % 10 === 0) {
-                   levelUp();
-               }
-
-               // Reduce Playboardsize after eating 5 food
-               if (foodEaten % 5 === 0) {
-                   reducePlayBoardSize();
-               }
-
-               // Reset the timer when a fruit is collected
-               clearInterval(snakeInterval);
-               timer = 20;
-               document.getElementById("timerSpan").innerText = timer;
-               snakeInterval = setInterval(initGame, speed);
-               snakeInterval = startTimer();
-           }
-
-           // Updating the snake's head position based on the current velocity
-           snakeX += velocityX;
-           snakeY += velocityY;
-
-           // Shifting forward the values of the elements in the snake body by one
-           for (let i = snakeBody.length - 1; i > 0; i--) {
-               snakeBody[i] = snakeBody[i - 1];
-           }
-           snakeBody[0] = [snakeX, snakeY]; // Setting first element of snake body to current snake position
-
-           // Checking if the snake's head is out of wall, if so setting gameOver to true
-           if (snakeX <= 0 || snakeX > rows || snakeY <= 0 || snakeY > columns) {
-               return gameOver = true;
-           }
-
-           for (let i = 0; i < snakeBody.length; i++) {
-              // Adding a div for each part of the snake's body
-              if (i === 0) {
-                  // Add the orange-head class to the head of the snake
-                  html += `<div class="head orange-head" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
-              } else {
-                       html += `<div class="head" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
-              }
-
-              // Checking if the snake head hit the body, if so set gameOver to true
-              if (i !== 0 && snakeBody[0][1] === snakeBody[i][1] && snakeBody[0][0] === snakeBody[i][0]) {
-                     gameOver = true;
-             }
-         }
-
-          for (let i = 0; i < snakeBody.length - snakeBody.length + 1; i++) {
-              // Adding a div for each part of the snake's body
-              html += `<div class="tail" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]}"></div>`;
-             // Checking if the snake head hit the body, if so set gameOver to true
-             if (i !== 0 && snakeBody[0][1] === snakeBody[i][1] && snakeBody[0][0] === snakeBody[i][0]) {
-                  gameOver = true;
-                }
-         }
-
-         playBoard.innerHTML = html;
-        }
-
-         const initGame = () => {
-             initGameLogic();
-             drawGameBoard();
-         };
 updateFoodPosition();
-snakeInterval = setInterval(initGame, 100);
+snakeInterval = setInterval(startGame, 100);
 //snakeInterval = startTimer();
-document.addEventListener("keyup", changeDirection)
+document.addEventListener("keyup", changeDirection);
