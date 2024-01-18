@@ -3,16 +3,15 @@
 ## Snake
 This is an implementation of the classic game "Snake". The original source is from [CodingNepal](http://youtube.com/codingnepal).
 
-### Bugs
-- Fix the bugs:
-  - Snake cannot be turned downwards.
-  - Food is always in the same corner.
-  - Score does not increase.
-  - Game stops, if snake reaches the top area.
-
-### Extensions
-- The snake's head should have a different color than the tail.
-- Make the playground variable in size.
-- Increase the speed of the snake after eating N food elements. Or include next levels that can be reached after eating M food elements.
-- Include a timer that forces the player to get the next food element quickly. 
+## Current status of the game
+- The snake can be turned to all sides
+- Food appears at the whole game field
+- The score increase after eating 1 food
+- The snake's head is a different colour than the snake's tail
+- The playground size is variable and change after eating 5 food
+- After eating 5 food elements, the speed of the snake increases
+- After eating 10 food elements, the player is getting leveled up
+- A timer is included that forces the player to get the next food element
+- After ending the round, you can enter a player's name to the scoreboard (The scoreboard shows the best 10 scores)
+- After ending the round, a game over message appearers and shows a random fact
 
